@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messenger-style Chat Widget</title>
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+    <style>
+        :root {
+            /* Màu sắc của Messenger */
+            --chat--color-primary: #007bff;
+            --chat--color-primary-shade-50: #0069d9;
+            --chat--color-primary-shade-100: #0056b3;
+            --chat--color-secondary: #0084ff;
+            --chat--color-secondary-shade-50: #007bff;
+            --chat--color-light: #f5f6f7;
+
+            /* Bo tròn góc */
+            --chat--border-radius: 1.5rem;
+
+            /* Tùy chỉnh tin nhắn */
+            --chat--message--padding: 0.75rem 1rem;
+            --chat--message--bot--background: var(--chat--color-white);
+            --chat--message--bot--color: var(--chat--color-dark);
+            --chat--message--bot--border: none;
+            --chat--message--user--background: var(--chat--color-secondary);
+            --chat--message--user--color: var(--chat--color-white);
+            --chat--message--user--border: none;
+
+            /* Tùy chỉnh nút bật/tắt chat */
+            --chat--toggle--background: var(--chat--color-primary);
+            --chat--toggle--hover--background: var(--chat--color-primary-shade-50);
+            --chat--toggle--active--background: var(--chat--color-primary-shade-100);
+            --chat--toggle--color: var(--chat--color-white);
+            --chat--toggle--size: 56px;
+        }
+
+        /* Thêm bóng đổ cho các tin nhắn */
+        .chat-message {
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Chào mừng đến với trang web của chúng tôi!</h1>
+    <p>Nhấn vào biểu tượng chat để trò chuyện với chúng tôi.</p>
+
+    <div id="n8n-chat"></div>
+
+    <script type="module">
+        import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+
+        createChat({
+            webhookUrl: 'YOUR_PRODUCTION_WEBHOOK_URL',
+            initialMessages: [
+                'Chào bạn! 👋',
+                'Chúng tôi có thể giúp gì cho bạn hôm nay?'
+            ],
+            i18n: {
+                en: {
+                    title: 'Trò chuyện với chúng tôi',
+                    subtitle: 'Chúng tôi sẵn lòng hỗ trợ 24/7.',
+                    footer: '',
+                    getStarted: 'Cuộc trò chuyện mới',
+                    inputPlaceholder: 'Nhập tin nhắn...'
+                },
+            },
+            showWelcomeScreen: true
+        });
+    </script>
+</body>
+</html>
