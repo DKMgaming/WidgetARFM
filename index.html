@@ -4,51 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messenger-style Chat Widget</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
     <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+
     <style>
         :root {
-            /* Màu sắc của Messenger */
+            /* Màu sắc giống Messenger */
             --chat--color-primary: #007bff;
             --chat--color-primary-shade-50: #0069d9;
-            --chat--color-primary-shade-100: #0056b3;
             --chat--color-secondary: #0084ff;
-            --chat--color-secondary-shade-50: #007bff;
             --chat--color-light: #f5f6f7;
 
-            /* Bo tròn góc */
+            /* Bo tròn góc và hiệu ứng */
             --chat--border-radius: 1.5rem;
-            ---chat--header-height: 1.5rem
-            --chat--heading--font-size: 1em;
-	        --chat--header--color: var(--chat--color-light);
-            --chat--subtitle--font-size: 0.8em;
-	        --chat--subtitle--line-height: 0.8;
+            --chat--toggle--border-radius: 50%; /* Nút bật/tắt hình tròn */
+            --chat--message-user-border-radius: 1.5rem 1.5rem 0.3rem 1.5rem; /* Bo góc riêng cho tin nhắn người dùng */
+            --chat--message-bot-border-radius: 1.5rem 1.5rem 1.5rem 0.3rem;   /* Bo góc riêng cho tin nhắn bot */
+
+            /* Tùy chỉnh cửa sổ chat */
+            --chat--window--border-radius: 0.75rem;
+            --chat--window--width: 350px;
+            --chat--window--height: 500px;
+
+            /* Tùy chỉnh Header */
+            --chat--header--background: #0084ff; /* Màu xanh dương cho header */
+            --chat--header--color: #ffffff;
+            --chat--header--padding: 0.8rem 1rem;
+            --chat--heading--font-size: 1.2em; /* Kích thước tiêu đề nhỏ gọn */
+            --chat--subtitle--font-size: 0.9em; /* Kích thước phụ đề */
+
+            /* Tùy chỉnh input và button */
+            --chat--textarea--height: 40px;
+            --chat--button--border-radius: 2rem;
 
             /* Tùy chỉnh tin nhắn */
             --chat--message--padding: 0.75rem 1rem;
-            --chat--message--bot--background: var(--chat--color-white);
-            --chat--message--bot--color: var(--chat--color-dark);
-            --chat--message--bot--border: none;
-            --chat--message--user--background: var(--chat--color-secondary);
-            --chat--message--user--color: var(--chat--color-white);
-            --chat--message--user--border: none;
-
-            /* Tùy chỉnh nút bật/tắt chat */
-            --chat--toggle--background: var(--chat--color-primary);
-            --chat--toggle--hover--background: var(--chat--color-primary-shade-50);
-            --chat--toggle--active--background: var(--chat--color-primary-shade-100);
-            --chat--toggle--color: var(--chat--color-white);
-            --chat--toggle--size: 56px;
+            --chat--message--bot--background: #f5f6f7;
+            --chat--message--bot--color: #1c1c1c;
+            --chat--message--user--background: #0084ff;
+            --chat--message--user--color: #ffffff;
+            --chat--message--box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng */
         }
 
-        /* Thêm bóng đổ cho các tin nhắn */
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Thêm các hiệu ứng và tinh chỉnh riêng */
+        .chat-container {
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+        }
         .chat-message {
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--chat--message--box-shadow);
         }
     </style>
 </head>
 <body>
-    <h1>Chào mừng đến với trang web của chúng tôi!</h1>
-    <p>Nhấn vào biểu tượng chat để trò chuyện với chúng tôi.</p>
+    <div style="padding: 20px; text-align: center;">
+        <h1>Chào mừng đến với trang web của chúng tôi!</h1>
+        <p>Nhấn vào biểu tượng chat ở góc dưới cùng bên phải để trò chuyện với chúng tôi.</p>
+    </div>
 
     <div id="n8n-chat"></div>
 
@@ -61,16 +80,16 @@
                 'Chào bạn! 👋',
                 'Chúng tôi có thể giúp gì cho bạn hôm nay?'
             ],
+            showWelcomeScreen: true,
             i18n: {
                 en: {
                     title: 'Trò chuyện với chúng tôi',
-                    subtitle: 'Chúng tôi sẵn lòng hỗ trợ 24/7.',
+                    subtitle: 'Chúng tôi sẵn lòng hỗ trợ bạn 24/7.',
                     footer: '',
-                    getStarted: 'Cuộc trò chuyện mới',
-                    inputPlaceholder: 'Nhập tin nhắn...'
+                    getStarted: 'Bắt đầu trò chuyện',
+                    inputPlaceholder: 'Nhập tin nhắn...',
                 },
-            },
-            showWelcomeScreen: true
+            }
         });
     </script>
 </body>
