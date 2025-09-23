@@ -13,51 +13,49 @@
 
     <style>
         :root {
-            /* Màu sắc giống Messenger */
+            /* Messenger-like color scheme */
             --chat--color-primary: #007bff;
             --chat--color-primary-shade-50: #0069d9;
             --chat--color-secondary: #0084ff;
             --chat--color-light: #f5f6f7;
+            --chat--color-dark: #1c1c1c;
 
-            /* Bo tròn góc và hiệu ứng */
+            /* General styling */
             --chat--border-radius: 1.5rem;
-            --chat--toggle--border-radius: 50%; /* Nút bật/tắt hình tròn */
-            --chat--message-user-border-radius: 1.5rem 1.5rem 0.3rem 1.5rem; /* Bo góc riêng cho tin nhắn người dùng */
-            --chat--message-bot-border-radius: 1.5rem 1.5rem 1.5rem 0.3rem;   /* Bo góc riêng cho tin nhắn bot */
-
-            /* Tùy chỉnh cửa sổ chat */
             --chat--window--border-radius: 0.75rem;
             --chat--window--width: 350px;
-            --chat--window--height: 700px;
-
-            /* Tùy chỉnh Header */
-            --chat--header--background: #0084ff; /* Màu xanh dương cho header */
-            --chat--header--color: #ffffff;
-            --chat--header--padding: 0.8rem 1rem;
-            --chat--heading--font-size: 1.2em; /* Kích thước tiêu đề nhỏ gọn */
-            --chat--subtitle--font-size: 0.9em; /* Kích thước phụ đề */
-
-            /* Tùy chỉnh input và button */
-            --chat--textarea--height: 40px;
+            --chat--window--height: 500px;
             --chat--button--border-radius: 2rem;
 
-            /* Tùy chỉnh tin nhắn */
+            /* Compact Header Styling */
+            --chat--header--background: #0084ff;
+            --chat--header--color: #ffffff;
+            --chat--header--padding: 0.8rem 1rem; /* Adjust padding to make it smaller */
+            --chat--heading--font-size: 1em;    /* Smaller title font size */
+            --chat--subtitle--font-size: 0.8em; /* Smaller subtitle font size */
+
+            /* Message styling */
             --chat--message--padding: 0.75rem 1rem;
             --chat--message--bot--background: #f5f6f7;
-            --chat--message--bot--color: #1c1c1c;
+            --chat--message--bot--color: var(--chat--color-dark);
             --chat--message--user--background: #0084ff;
             --chat--message--user--color: #ffffff;
-            --chat--message--box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng */
+            --chat--message-user-border-radius: 1.5rem 1.5rem 0.3rem 1.5rem;
+            --chat--message-bot-border-radius: 1.5rem 1.5rem 1.5rem 0.3rem;
+            --chat--message--box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+            /* Input styling */
+            --chat--textarea--height: 40px;
         }
 
         body {
             font-family: 'Roboto', sans-serif;
         }
 
-        /* Thêm các hiệu ứng và tinh chỉnh riêng */
         .chat-container {
             box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
         }
+
         .chat-message {
             box-shadow: var(--chat--message--box-shadow);
         }
@@ -65,7 +63,7 @@
 </head>
 <body>
     <div style="padding: 20px; text-align: center;">
-        <h1>Chào mừng đến với trang web Hỗ trợ về tần số vô tuyến điện!</h1>
+        <h1>Chào mừng đến với trang web của chúng tôi!</h1>
         <p>Nhấn vào biểu tượng chat ở góc dưới cùng bên phải để trò chuyện với chúng tôi.</p>
     </div>
 
