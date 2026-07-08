@@ -1859,28 +1859,85 @@
         });
 
         // ----------------- Chat Widget Integration Control -----------------
-        // Helper function to find the chat toggle button even inside Shadow DOM
+        // Helper to check if the chat window is currently open
+        function isChatOpen() {
+            const container = document.getElementById('n8n-chat');
+            if (!container) return false;
+
+            function checkOpen(root) {
+                if (!root) return false;
+                
+                // Check common chat window classes
+                const windowEl = root.querySelector('.chat-window') || 
+                                 root.querySelector('[class*="chat-window"]') ||
+                                 root.querySelector('[class*="window"]');
+                if (windowEl) {
+                    const style = window.getComputedStyle(windowEl);
+                    return style.display !== 'none' && style.opacity !== '0' && style.visibility !== 'hidden';
+                }
+                
+                // Traverse shadow roots of elements inside this root
+                const elements = root.querySelectorAll('*');
+                for (const el of elements) {
+                    if (el.shadowRoot) {
+                        if (checkOpen(el.shadowRoot)) return true;
+                    }
+                }
+                return false;
+            }
+
+            if (checkOpen(container)) return true;
+            if (container.shadowRoot && checkOpen(container.shadowRoot)) return true;
+            return false;
+        }
+
+        // Helper function to recursively find the chat toggle button inside any shadow DOM
         function getChatButton() {
             const container = document.getElementById('n8n-chat');
             if (!container) return null;
-            
-            // 1. Check light DOM
-            let button = container.querySelector('.chat-button') || container.querySelector('button');
-            if (button) return button;
-            
-            // 2. Check Shadow DOM
-            const shadowHosts = container.querySelectorAll('*');
-            for (const host of shadowHosts) {
-                if (host.shadowRoot) {
-                    const btn = host.shadowRoot.querySelector('.chat-button') || host.shadowRoot.querySelector('button');
-                    if (btn) return btn;
+
+            function search(root) {
+                if (!root) return null;
+
+                // 1. Try to find the button inside this root
+                const btn = root.querySelector('.n8n-chat-widget__toggle') || 
+                            root.querySelector('.chat-button') || 
+                            root.querySelector('button') ||
+                            root.querySelector('[class*="chat-button"]') || 
+                            root.querySelector('[class*="toggle"]') ||
+                            root.querySelector('[class*="button"]');
+                
+                if (btn) {
+                    // Filter out buttons that belong inside the open chat window (like send/close button)
+                    const isInsideWindow = btn.closest && (
+                        btn.closest('.chat-window') || 
+                        btn.closest('[class*="chat-window"]') || 
+                        btn.closest('[class*="window"]')
+                    );
+                    if (!isInsideWindow) {
+                        return btn;
+                    }
                 }
+
+                // 2. Recursively check all children and their shadowRoots
+                const elements = root.querySelectorAll('*');
+                for (const el of elements) {
+                    if (el.shadowRoot) {
+                        const found = search(el.shadowRoot);
+                        if (found) return found;
+                    }
+                }
+
+                return null;
             }
-            
-            // 3. Fallback: check shadow root of n8n-chat container if it gets turned into one
+
+            // Start search from container and its shadow root
+            let result = search(container);
+            if (result) return result;
+
             if (container.shadowRoot) {
-                const btn = container.shadowRoot.querySelector('.chat-button') || container.shadowRoot.querySelector('button');
-                if (btn) return btn;
+                result = search(container.shadowRoot);
+                if (result) return result;
             }
 
             return null;
@@ -1889,13 +1946,16 @@
         // Triggers the n8n-chat widget to open, highlights the launcher button and sends initial message if specified.
         function triggerChatWidget(initialUserMessage = "") {
             const chatBtn = getChatButton();
+            const isOpen = isChatOpen();
 
             if (chatBtn) {
                 // Pulse highlight the button for UX feedback
                 chatBtn.classList.add('pulse-guidance');
                 
-                // Trigger click to toggle the chat window
-                chatBtn.click();
+                // Only click to toggle if it's currently closed
+                if (!isOpen) {
+                    chatBtn.click();
+                }
                 
                 // Remove animation after window opens
                 setTimeout(() => {
@@ -1904,13 +1964,9 @@
 
                 // If user selected a template path (like calculations or troubleshooter), we can copy it to clipboard or instruct them
                 if (initialUserMessage) {
-                    // Modern chat widgets might support input insertion, but since it's a closed script,
-                    // we write the text to clipboard and notify the user to paste it.
                     navigator.clipboard.writeText(initialUserMessage)
                         .then(() => {
                             console.log("Copied report query to clipboard");
-                            // We can alert or toast, or let the user paste it. Since the chat opens,
-                            // having the message in clipboard makes it easy to right click -> paste.
                             setTimeout(() => {
                                 alert("Đã chuẩn bị thông tin báo cáo trong bộ nhớ tạm (Clipboard).\nBạn chỉ cần Nhấn Ctrl + V (Dán) vào ô nhập chat và gửi đi!");
                             }, 500);
@@ -1920,7 +1976,12 @@
                         });
                 }
             } else {
-                // Fallback message
+                // Fallback message with debug logs to help if anything goes wrong
+                const container = document.getElementById('n8n-chat');
+                console.error("n8n-chat toggle button not found. Container:", container);
+                if (container && container.shadowRoot) {
+                    console.log("Shadow Root InnerHTML:", container.shadowRoot.innerHTML);
+                }
                 alert("Vui lòng nhấn vào biểu tượng Chat ở góc phải màn hình để gửi báo cáo!");
             }
         }
