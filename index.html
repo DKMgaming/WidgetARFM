@@ -1,74 +1,1899 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messenger-style Chat Widget</title>
+    <title>Hệ thống Hỗ trợ Tần số Vô tuyến Điện Quốc gia</title>
+    
+    <!-- Meta tags SEO -->
+    <meta name="description" content="Cổng thông tin hỗ trợ đăng ký, tra cứu tần số vô tuyến điện, chẩn đoán nhiễu sóng và tư vấn luật tần số trực tuyến 24/7.">
+    <meta name="keywords" content="tần số vô tuyến điện, cấp phép tần số, can nhiễu vô tuyến, cục tần số, tra cứu tần số">
+    <meta name="robots" content="index, follow">
 
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- n8n Chat Widget Style -->
     <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
 
     <style>
         :root {
-            /* Messenger-like color scheme */
-            --chat--color-primary: #007bff;
-            --chat--color-primary-shade-50: #0069d9;
-            --chat--color-secondary: #0084ff;
-            --chat--color-light: #f5f6f7;
-            --chat--color-dark: #1c1c1c;
-
-            /* General styling */
+            /* Theme Color Palette (Electromagnetic/Cyber theme) */
+            --bg-dark: #070a13;
+            --bg-surface: rgba(13, 20, 38, 0.6);
+            --bg-card: rgba(18, 28, 54, 0.7);
+            --bg-card-hover: rgba(26, 40, 77, 0.9);
+            
+            --text-primary: #f3f4f6;
+            --text-secondary: #a1a8b9;
+            --text-muted: #626b7f;
+            
+            --primary: #00f2fe;
+            --primary-glow: rgba(0, 242, 254, 0.15);
+            --secondary: #4facfe;
+            --secondary-glow: rgba(79, 172, 254, 0.15);
+            --accent: #bd00ff;
+            --accent-glow: rgba(189, 0, 255, 0.15);
+            
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(0, 242, 254, 0.25);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* n8n-chat styling customization */
+            --chat--color-primary: #00f2fe;
+            --chat--color-primary-shade-50: #00c6d1;
+            --chat--color-secondary: #4facfe;
+            --chat--color-light: #0d1426;
+            --chat--color-dark: #f3f4f6;
             --chat--border-radius: 1.5rem;
-            --chat--window--border-radius: 0.75rem;
-            --chat--window--width: 350px;
-            --chat--window--height: 600px;
-            --chat--button--border-radius: 2rem;
-
-            /* Compact Header Styling */
-            --chat--header--background: #0084ff;
+            --chat--window--border-radius: 1.25rem;
+            --chat--window--width: 380px;
+            --chat--window--height: 580px;
+            --chat--button--border-radius: 50%;
+            
+            --chat--header--background: linear-gradient(135deg, #0d1426 0%, #070a13 100%);
             --chat--header--color: #ffffff;
-            --chat--header--padding: 0.8rem 1rem; /* Adjust padding to make it smaller */
-            --chat--heading--font-size: 1em;    /* Smaller title font size */
-            --chat--subtitle--font-size: 0.8em; /* Smaller subtitle font size */
-
-            /* Message styling */
-            --chat--message--padding: 0.75rem 1rem;
-            --chat--message--bot--background: #f5f6f7;
-            --chat--message--bot--color: var(--chat--color-dark);
-            --chat--message--user--background: #0084ff;
-            --chat--message--user--color: #ffffff;
+            --chat--header--padding: 1.2rem 1.2rem;
+            --chat--heading--font-size: 1.1rem;
+            --chat--subtitle--font-size: 0.85rem;
+            
+            --chat--message--padding: 0.8rem 1.1rem;
+            --chat--message--bot--background: #182440;
+            --chat--message--bot--color: #f3f4f6;
+            --chat--message--user--background: #00f2fe;
+            --chat--message--user--color: #070a13;
             --chat--message-user-border-radius: 1.5rem 1.5rem 0.3rem 1.5rem;
             --chat--message-bot-border-radius: 1.5rem 1.5rem 1.5rem 0.3rem;
-            --chat--message--box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            --chat--message--box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            
+            --chat--textarea--height: 48px;
+        }
 
-            /* Input styling */
-            --chat--textarea--height: 40px;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(79, 172, 254, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(189, 0, 255, 0.04) 0%, transparent 45%);
+            background-attachment: fixed;
         }
 
-        .chat-container {
-            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+        h1, h2, h3, h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
         }
 
-        .chat-message {
-            box-shadow: var(--chat--message--box-shadow);
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            transition: var(--transition);
+        }
+
+        .glass-panel:hover {
+            border-color: var(--border-hover);
+            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.03);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation Bar */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(7, 10, 19, 0.75);
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo-wave {
+            stroke: var(--primary);
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            animation: pulse-wave 2s infinite ease-in-out;
+        }
+
+        .logo h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav {
+            display: flex;
+            gap: 28px;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--primary);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after, nav a.active::after {
+            width: 100%;
+        }
+
+        .btn-header {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-header:hover {
+            background: var(--primary);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 160px 0 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 242, 254, 0.08);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .hero h2 {
+            font-size: 3.2rem;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 40%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero h2 span {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            max-width: 580px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--bg-dark);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 242, 254, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .hero-visual {
+            position: relative;
+            height: 380px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wave-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(10, 16, 32, 0.5);
+            box-shadow: inset 0 0 30px rgba(0, 242, 254, 0.05);
+        }
+
+        .wave-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .visual-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--primary);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 6px 12px;
+            border-radius: 4px;
+            border-left: 2px solid var(--primary);
+            pointer-events: none;
+        }
+
+        /* Section Title styling */
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-header h3 {
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section-padding {
+            padding: 80px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* RF Spectrum Explorer Section */
+        .spectrum-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 36px;
+            align-items: stretch;
+        }
+
+        .spectrum-tabs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .band-tab {
+            padding: 16px 20px;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .band-tab:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--border-hover);
+        }
+
+        .band-tab.active {
+            background: rgba(0, 242, 254, 0.06);
+            border-color: var(--primary);
+            box-shadow: inset 0 0 10px rgba(0, 242, 254, 0.1);
+        }
+
+        .band-tab-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .band-tab-freq {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
+        .band-tab.active .band-tab-freq {
+            color: var(--primary);
+        }
+
+        .spectrum-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 32px;
+            min-height: 400px;
+        }
+
+        .spec-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .spec-icon {
+            font-size: 2.2rem;
+            background: rgba(255, 255, 255, 0.04);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .spec-title-group h4 {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .spec-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 16px;
+        }
+
+        .spec-meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .spec-meta-label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .spec-meta-value {
+            color: var(--primary);
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        .spec-body {
+            flex-grow: 1;
+            margin-bottom: 24px;
+        }
+
+        .spec-desc-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+
+        .spec-desc-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .spec-wave-sim {
+            height: 70px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            margin-top: 15px;
+            position: relative;
+        }
+
+        /* Licensing Fee Calculator Section */
+        .calculator-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.15);
+        }
+
+        .calc-results {
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .calc-results h4 {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 10px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .result-row.total {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 14px;
+            margin-bottom: 0;
+            margin-top: 8px;
+        }
+
+        .calc-cta {
+            margin-top: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .calc-note {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            max-width: 400px;
+        }
+
+        /* Interference Troubleshooter Section */
+        .troubleshooter-card {
+            max-width: 750px;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .tr-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.01);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tr-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .tr-steps-indicator {
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-family: monospace;
+            background: rgba(0, 242, 254, 0.08);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .tr-progress-bar {
+            height: 2px;
+            background: rgba(255, 255, 255, 0.05);
+            width: 100%;
+        }
+
+        .tr-progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 33.3%;
+            transition: var(--transition);
+        }
+
+        .tr-body {
+            padding: 32px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .tr-step {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tr-step.active {
+            display: block;
+        }
+
+        .tr-question {
+            font-size: 1.2rem;
+            margin-bottom: 24px;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .tr-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .tr-option-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 16px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .tr-option-label:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--border-hover);
+        }
+
+        .tr-option-label input {
+            accent-color: var(--primary);
+            width: 16px;
+            height: 16px;
+        }
+
+        .tr-option-label.selected {
+            background: rgba(0, 242, 254, 0.04);
+            border-color: var(--primary);
+        }
+
+        .tr-footer {
+            padding: 24px 32px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .tr-result-box {
+            background: rgba(0, 242, 254, 0.03);
+            border: 1px dashed var(--primary);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .tr-result-title {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tr-result-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        /* FAQ Accordions */
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .faq-item {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.01);
+            transition: var(--transition);
+        }
+
+        .faq-item:hover {
+            border-color: var(--border-hover);
+        }
+
+        .faq-question {
+            padding: 20px 24px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            width: 100%;
+            text-align: left;
+            font-family: inherit;
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .faq-item.active {
+            border-color: var(--primary);
+            background: rgba(0, 242, 254, 0.02);
+        }
+
+        .faq-item.active .faq-question::after {
+            content: '−';
+            color: var(--primary);
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            padding: 0 24px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            border-top: 1px solid transparent;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 250px;
+            padding: 0 24px 20px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 60px 0 30px 0;
+            background: #04060b;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 48px;
+        }
+
+        .footer-brand h4 {
+            color: #ffffff;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+        }
+
+        .footer-brand p {
+            max-width: 320px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .footer-links h5 {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 30px;
+        }
+
+        /* Animation utilities */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse-wave {
+            0%, 100% { transform: scaleY(1); opacity: 0.8; }
+            50% { transform: scaleY(1.2); opacity: 1; stroke-width: 3; }
+        }
+
+        /* Custom pulsing for the chat button launcher to make it fit */
+        #n8n-chat .chat-button {
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.5) !important;
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        #n8n-chat .chat-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.8) !important;
+        }
+
+        /* Highlight animation for chat button guidance */
+        @keyframes guidance-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.8); transform: scale(1); }
+            70% { box-shadow: 0 0 0 20px rgba(0, 242, 254, 0); transform: scale(1.15); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0); transform: scale(1); }
+        }
+
+        .pulse-guidance {
+            animation: guidance-pulse 1.8s infinite ease-in-out !important;
+        }
+
+        /* Responsive Layouts */
+        @media (max-width: 968px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                text-align: center;
+            }
+            
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                margin: 0 auto 32px auto;
+            }
+
+            .hero-actions {
+                justify-content: center;
+            }
+
+            .spectrum-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .spectrum-tabs {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .spectrum-tabs {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .calc-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .tr-options {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .nav-container {
+                padding: 0 16px;
+            }
+
+            nav, .btn-header {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div style="padding: 20px; text-align: center;">
-        <h1>Chào mừng đến với trang web Hỗ trợ về tần số vô tuyến điện!</h1>
-        <p>Nhấn vào biểu tượng chat ở góc dưới cùng bên phải để trò chuyện với chúng tôi.</p>
-    </div>
 
+    <!-- Header / Navigation -->
+    <header>
+        <div class="container nav-container">
+            <a href="#" class="logo" id="logo">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Custom RF Wave Icon -->
+                    <path class="logo-wave" d="M12 18V12" />
+                    <path class="logo-wave" d="M8.5 15.5C8.5 13.5 10 12 12 12C14 12 15.5 13.5 15.5 15.5" />
+                    <path class="logo-wave" d="M5 19C5 15 8 12 12 12C16 12 19 15 19 19" />
+                    <path class="logo-wave" d="M1.5 22.5C1.5 16.5 6 12 12 12C18 12 22.5 16.5 22.5 22.5" />
+                </svg>
+                <h1>RF-Portal</h1>
+            </a>
+            <nav id="navbar">
+                <a href="#" class="active">Trang Chủ</a>
+                <a href="#spectrum">Phổ Tần Số</a>
+                <a href="#calculator">Tra Phí Cấp Phép</a>
+                <a href="#troubleshooter">Báo Can Nhiễu</a>
+                <a href="#faq">Câu Hỏi Thường Gặp</a>
+            </nav>
+            <button class="btn-header" onclick="triggerChatWidget()">Trợ Lý Trực Tuyến</button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-grid">
+            <div>
+                <div class="hero-badge">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="margin-right: 4px;">
+                        <circle cx="12" cy="12" r="10" />
+                        <circle cx="12" cy="12" r="1" fill="currentColor"/>
+                    </svg>
+                    Hỗ Trợ Tự Động 24/7
+                </div>
+                <h2>Hệ thống Hỗ trợ <br><span>Tần số Vô tuyến Điện</span></h2>
+                <p>Cổng dịch vụ trực tuyến thông minh giúp tra cứu phổ tần số, tự động ước tính lệ phí cấp phép, chẩn đoán sự cố can nhiễu sóng và hỗ trợ giải đáp pháp lý thông qua Trợ lý AI.</p>
+                <div class="hero-actions">
+                    <button class="btn-primary" onclick="scrollToId('spectrum')">
+                        Bắt đầu Khám phá
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                    <button class="btn-secondary" onclick="scrollToId('troubleshooter')">Báo cáo Can nhiễu</button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="wave-container">
+                    <canvas id="waveCanvas" class="wave-canvas"></canvas>
+                    <div class="visual-overlay">RF SIGNAL MONITOR: ACTIVE</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RF Spectrum Explorer -->
+    <section id="spectrum" class="section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h3>Khám phá Phổ Tần số Vô tuyến</h3>
+                <p>Tìm hiểu các dải phổ tần số vô tuyến điện, đặc tính bước sóng, ứng dụng thực tế và điều kiện cấp phép sử dụng.</p>
+            </div>
+            
+            <div class="spectrum-grid">
+                <!-- Grid tabs -->
+                <div class="spectrum-tabs">
+                    <button class="band-tab active" id="tab-vlf" onclick="selectBand('vlf')">
+                        <span class="band-tab-name">VLF (Rất thấp)</span>
+                        <span class="band-tab-freq">3 - 30 kHz</span>
+                    </button>
+                    <button class="band-tab" id="tab-lf" onclick="selectBand('lf')">
+                        <span class="band-tab-name">LF (Thấp)</span>
+                        <span class="band-tab-freq">30 - 300 kHz</span>
+                    </button>
+                    <button class="band-tab" id="tab-mf" onclick="selectBand('mf')">
+                        <span class="band-tab-name">MF (Trung bình)</span>
+                        <span class="band-tab-freq">300 kHz - 3 MHz</span>
+                    </button>
+                    <button class="band-tab" id="tab-hf" onclick="selectBand('hf')">
+                        <span class="band-tab-name">HF (Cao / Sóng ngắn)</span>
+                        <span class="band-tab-freq">3 - 30 MHz</span>
+                    </button>
+                    <button class="band-tab" id="tab-vhf" onclick="selectBand('vhf')">
+                        <span class="band-tab-name">VHF (Rất cao)</span>
+                        <span class="band-tab-freq">30 - 300 MHz</span>
+                    </button>
+                    <button class="band-tab" id="tab-uhf" onclick="selectBand('uhf')">
+                        <span class="band-tab-name">UHF (Cực cao)</span>
+                        <span class="band-tab-freq">300 MHz - 3 GHz</span>
+                    </button>
+                    <button class="band-tab" id="tab-shf" onclick="selectBand('shf')">
+                        <span class="band-tab-name">SHF (Siêu cao)</span>
+                        <span class="band-tab-freq">3 - 30 GHz</span>
+                    </button>
+                    <button class="band-tab" id="tab-ehf" onclick="selectBand('ehf')">
+                        <span class="band-tab-name">EHF (Cực kỳ cao)</span>
+                        <span class="band-tab-freq">30 - 300 GHz</span>
+                    </button>
+                </div>
+
+                <!-- Info detail block -->
+                <div class="spectrum-details glass-panel" id="detail-panel">
+                    <div>
+                        <div class="spec-header">
+                            <div class="spec-title-group">
+                                <h4 id="band-title">Tần số rất thấp (VLF)</h4>
+                            </div>
+                            <div class="spec-icon" id="band-icon">🌊</div>
+                        </div>
+
+                        <div class="spec-meta">
+                            <div class="spec-meta-item">
+                                <span class="spec-meta-label">Băng tần</span>
+                                <span class="spec-meta-value" id="band-range">3 kHz - 30 kHz</span>
+                            </div>
+                            <div class="spec-meta-item">
+                                <span class="spec-meta-label">Bước sóng</span>
+                                <span class="spec-meta-value" id="band-wavelength">10 km - 100 km</span>
+                            </div>
+                        </div>
+
+                        <div class="spec-body">
+                            <div class="spec-desc-label">Ứng dụng chủ yếu</div>
+                            <p class="spec-desc-text" id="band-usage">Liên lạc ngầm dưới nước (tàu ngầm), nghiên cứu khí quyển và quân sự.</p>
+                            
+                            <div class="spec-desc-label">Tình trạng cấp phép</div>
+                            <p class="spec-desc-text" id="band-license">Kiểm soát đặc biệt bởi Bộ Quốc Phòng và Cục Tần số.</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="spec-desc-label">Mô phỏng sóng dải tần tương ứng</div>
+                        <div class="spec-wave-sim">
+                            <canvas id="specWaveCanvas" style="width: 100%; height: 100%; display: block;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Licensing Fee Calculator -->
+    <section id="calculator" class="section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h3>Ước tính Phí Sử dụng Tần số</h3>
+                <p>Công cụ hỗ trợ tính toán sơ bộ mức phí và lệ phí cấp phép sử dụng tần số vô tuyến điện tại Việt Nam dựa trên loại hình thiết bị.</p>
+            </div>
+
+            <div class="calculator-container glass-panel">
+                <div class="calc-grid">
+                    <div class="form-group">
+                        <label for="deviceType">Loại thiết bị / Hệ thống vô tuyến</label>
+                        <select id="deviceType" class="form-input" onchange="calculateFees()">
+                            <option value="bodam">Bộ đàm cầm tay dân dụng (đơn kênh)</option>
+                            <option value="tramcodinh">Trạm phát sóng vô tuyến cố định (VHF/UHF)</option>
+                            <option value="drone">Thiết bị bay không người lái (UAV/Drone chuyên dụng)</option>
+                            <option value="wifipower">Thiết bị Wi-Fi công suất cao (ngoài trời)</option>
+                            <option value="satellite">Trạm mặt đất vệ tinh nhỏ (VSAT)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quantity">Số lượng thiết bị / Trạm phát</label>
+                        <input type="number" id="quantity" class="form-input" min="1" value="1" oninput="calculateFees()">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="duration">Thời hạn cấp phép đề xuất</label>
+                        <select id="duration" class="form-input" onchange="calculateFees()">
+                            <option value="1">1 năm</option>
+                            <option value="2">2 năm</option>
+                            <option value="5">5 năm (Quy hoạch dài hạn)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="justify-content: flex-end;">
+                        <button class="btn-primary" style="justify-content: center; height: 46px;" onclick="calculateFees()">Tính Toán Phí</button>
+                    </div>
+                </div>
+
+                <div class="calc-results">
+                    <h4>Bảng Chi Tiết Phí Dự Kiến (Mẫu)</h4>
+                    <div class="result-row">
+                        <span>Lệ phí cấp phép (Thu một lần):</span>
+                        <span id="calcSetupFee" style="font-family: monospace;">100.000 ₫</span>
+                    </div>
+                    <div class="result-row">
+                        <span>Phí sử dụng tần số / năm / thiết bị:</span>
+                        <span id="calcBaseFee" style="font-family: monospace;">350.000 ₫</span>
+                    </div>
+                    <div class="result-row">
+                        <span>Tổng phí sử dụng (theo số lượng & thời hạn):</span>
+                        <span id="calcSubtotal" style="font-family: monospace;">350.000 ₫</span>
+                    </div>
+                    <div class="result-row total">
+                        <span>Tổng cộng dự kiến:</span>
+                        <span id="calcTotal" style="font-family: monospace;">450.000 ₫</span>
+                    </div>
+                </div>
+
+                <div class="calc-cta">
+                    <span class="calc-note">
+                        * Mức phí trên mang tính chất tham khảo dựa trên Biểu phí của Bộ Tài chính. Để làm hồ sơ chuẩn xác, vui lòng hỏi ý kiến chuyên viên.
+                    </span>
+                    <button class="btn-secondary" onclick="triggerChatWidget('Tôi muốn được hướng dẫn làm hồ sơ xin cấp phép tần số')">Liên hệ Hướng dẫn hồ sơ</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interference Troubleshooter -->
+    <section id="troubleshooter" class="section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h3>Chẩn đoán Can nhiễu Sóng</h3>
+                <p>Nếu bạn đang gặp sự cố về chất lượng đàm thoại hoặc kết nối không dây, hãy hoàn thành nhanh bộ khảo sát chẩn đoán dưới đây.</p>
+            </div>
+
+            <div class="troubleshooter-card glass-panel" id="trouble-wizard">
+                <div class="tr-header">
+                    <span class="tr-title" id="wizard-title-indicator">Chẩn đoán: Bước 1 trên 3</span>
+                    <span class="tr-steps-indicator" id="wizard-step-badge">BƯỚC 1/3</span>
+                </div>
+                
+                <div class="tr-progress-bar">
+                    <div class="tr-progress-fill" id="wizard-progress"></div>
+                </div>
+
+                <div class="tr-body">
+                    <!-- Step 1: Symptom Selection -->
+                    <div class="tr-step active" id="tr-step-1">
+                        <p class="tr-question">Hiện tượng lỗi vô tuyến bạn đang gặp phải là gì?</p>
+                        <div class="tr-options">
+                            <label class="tr-option-label" onclick="selectWizardOption(this, 1)">
+                                <input type="radio" name="symptom" value="noise">
+                                <span>Âm thanh bị rè, lẫn nhiều tạp âm</span>
+                            </label>
+                            <label class="tr-option-label" onclick="selectWizardOption(this, 1)">
+                                <input type="radio" name="symptom" value="drop">
+                                <span>Mất tín hiệu ngắt quãng, sóng yếu đột ngột</span>
+                            </label>
+                            <label class="tr-option-label" onclick="selectWizardOption(this, 1)">
+                                <input type="radio" name="symptom" value="interact">
+                                <span>Nghe thấy đàm thoại của hệ thống khác</span>
+                            </label>
+                            <label class="tr-option-label" onclick="selectWizardOption(this, 1)">
+                                <input type="radio" name="symptom" value="total">
+                                <span>Mất hoàn toàn kết nối vô tuyến</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Device Selection -->
+                    <div class="tr-step" id="tr-step-2">
+                        <p class="tr-question">Hệ thống / Thiết bị nào đang bị ảnh hưởng trực tiếp?</p>
+                        <div class="tr-options">
+                            <label class="tr-option-label" onclick="selectWizardOption(this, 2)">
+                                <input type="radio" name="device" value="walkie">
+                                <span>Bộ đàm đàm thoại nội bộ</span>
+                            </label>
+                            <label class="tr-option-label" onclick="selectWizardOption(this, 2)">
+                                <input type="radio" name="device" value="wifi">
+                                <span>Mạng Wi-Fi / Thiết bị truyền tải dữ liệu</span>
+                            </label>
+                            <label class="tr-option-label" onclick="selectWizardOption(this, 2)">
+                                <input type="radio" name="device" value="mic">
+                                <span>Hệ thống Micro không dây chuyên nghiệp</span>
+                            </label>
+                            <label class="tr-option-label" onclick="selectWizardOption(this, 2)">
+                                <input type="radio" name="device" value="special">
+                                <span>Thiết bị vô tuyến chuyên dụng khác</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Result & Recommendation -->
+                    <div class="tr-step" id="tr-step-3">
+                        <div class="tr-result-box">
+                            <div class="tr-result-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                    <line x1="12" y1="9" x2="12" y2="13"/>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                                </svg>
+                                Đánh Giá Sơ Bộ Hệ Thống
+                            </div>
+                            <p class="tr-result-text" id="tr-analysis-result">Đang xử lý kết quả khảo sát...</p>
+                        </div>
+                        <p class="tr-question" style="font-size: 1rem; margin-bottom: 12px; color: var(--text-secondary);">Bạn muốn gửi báo cáo can nhiễu này đến kỹ thuật viên để kiểm tra phổ tần?</p>
+                        <button class="btn-primary" onclick="submitTroubleReport()">Gửi Báo Cáo Can Nhiễu Bằng Trợ Lý AI</button>
+                    </div>
+                </div>
+
+                <div class="tr-footer">
+                    <button class="btn-secondary" id="tr-back-btn" onclick="wizardBack()" style="visibility: hidden;">Quay lại</button>
+                    <button class="btn-primary" id="tr-next-btn" onclick="wizardNext()" disabled>Tiếp theo</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h3>Câu Hỏi Thường Gặp (FAQs)</h3>
+                <p>Tổng hợp các câu hỏi nhanh về pháp lý, kỹ thuật tần số vô tuyến điện được người dùng quan tâm nhiều nhất.</p>
+            </div>
+
+            <div class="faq-container">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">Những loại thiết bị nào được miễn giấy phép sử dụng tần số?</button>
+                    <div class="faq-answer">
+                        <p>Theo quy định, các thiết bị vô tuyến điện cự ly ngắn có công suất phát thấp và ít khả năng gây nhiễu sóng (ví dụ: các dòng Wi-Fi chuẩn dân dụng, thiết bị chuột/bàn phím không dây, các loại mic không dây gia đình và thiết bị Bluetooth) được miễn giấy phép tần số nếu tuân thủ các quy định về điều kiện kỹ thuật & khai thác của Bộ Thông tin & Truyền thông.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">Thủ tục xin cấp phép sử dụng tần số bộ đàm như thế nào?</button>
+                    <div class="faq-answer">
+                        <p>Để xin cấp phép tần số cho hệ thống bộ đàm liên lạc, doanh nghiệp cần chuẩn bị hồ sơ bao gồm bản khai thiết bị, sơ đồ mạng lưới vô tuyến đề xuất, giấy đăng ký kinh doanh và chứng nhận hợp quy của thiết bị. Hồ sơ được gửi trực tuyến lên Cục Tần số Vô tuyến điện hoặc trực tiếp tại các Trung tâm Tần số khu vực.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">Cần làm gì khi phát hiện thiết bị bị nhiễu sóng vô tuyến?</button>
+                    <div class="faq-answer">
+                        <p>Khi nghi ngờ bị can nhiễu, đầu tiên hãy kiểm tra xem nguồn gây nhiễu có xuất phát từ các thiết bị điện trong nhà hay không (đèn LED hỏng, motor kéo...). Nếu không xác định được nguyên nhân và tình trạng rè/mất sóng xảy ra liên tục trên diện rộng, bạn nên làm báo cáo can nhiễu gửi Trung tâm Tần số vô tuyến điện khu vực để được đo đạc, xử lý hành chính đối với nguồn phát bất hợp pháp.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">Mức phạt đối với hành vi sử dụng tần số bộ đàm lậu là bao nhiêu?</button>
+                    <div class="faq-answer">
+                        <p>Sử dụng tần số vô tuyến điện mà không có giấy phép hoặc sử dụng sai tần số được cấp phép có thể bị phạt hành chính từ 2.000.000 đ đến hàng chục triệu đồng đối với cá nhân/tổ chức (tùy thuộc vào công suất thiết bị). Đồng thời sẽ bị tịch thu phương tiện vô tuyến điện vi phạm pháp luật.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">Flycam (Drone) có cần phải đăng ký tần số vô tuyến điện không?</button>
+                    <div class="faq-answer">
+                        <p>Các thiết bị Drone/Flycam dân dụng hoạt động trong dải sóng Wi-Fi chuẩn (2.4 GHz và 5.8 GHz) với công suất phát chuẩn thường được miễn cấp phép tần số. Tuy nhiên, việc bay và vận hành thiết bị bay không người lái bắt buộc phải có Giấy phép bay được cấp bởi Cục Tác chiến - Bộ Quốc phòng trước mỗi chuyến bay.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <h4>Hệ thống RF-Portal</h4>
+                <p>Cổng thông tin tự động hóa hỗ trợ doanh nghiệp và cá nhân khai thác sử dụng tài nguyên tần số quốc gia đúng pháp luật, an toàn và hiệu quả.</p>
+                <div style="margin-top: 15px; color: var(--text-primary); font-family: 'Space Grotesk', sans-serif;">Hotline kỹ thuật: 1900 12xx</div>
+            </div>
+            <div class="footer-links">
+                <h5>Tính năng</h5>
+                <ul>
+                    <li><a href="#spectrum">Phổ Tần Số</a></li>
+                    <li><a href="#calculator">Tra Phí Cấp Phép</a></li>
+                    <li><a href="#troubleshooter">Báo Can Nhiễu</a></li>
+                    <li><a href="#faq">Câu Hỏi Thường Gặp</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h5>Đơn vị quản lý</h5>
+                <ul>
+                    <li><a href="https://rfd.gov.vn" target="_blank" rel="noopener">Cục Tần số Vô tuyến điện</a></li>
+                    <li><a href="https://mic.gov.vn" target="_blank" rel="noopener">Bộ Thông tin và Truyền thông</a></li>
+                    <li><a href="#" onclick="triggerChatWidget(); return false;">Liên hệ Kỹ thuật viên</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <div>&copy; 2026 RF-Portal. All rights reserved. Phát triển vì cộng đồng vô tuyến Việt Nam.</div>
+            <div style="display: flex; gap: 20px;">
+                <a href="#" style="color: var(--text-muted); text-decoration: none;">Điều khoản sử dụng</a>
+                <a href="#" style="color: var(--text-muted); text-decoration: none;">Chính sách bảo mật</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chat Widget Container element -->
     <div id="n8n-chat"></div>
 
+    <!-- Scripts -->
+    <script>
+        // ----------------- Hero Oscilloscope Wave Animation -----------------
+        const canvas = document.getElementById('waveCanvas');
+        const ctx = canvas.getContext('2d');
+        let animationFrameId;
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight || 340;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Wave characteristics
+        let waves = [
+            { amplitude: 45, frequency: 0.007, speed: 0.015, color: 'rgba(0, 242, 254, 0.28)', phase: 0 },
+            { amplitude: 30, frequency: 0.014, speed: -0.010, color: 'rgba(79, 172, 254, 0.20)', phase: 0 },
+            { amplitude: 15, frequency: 0.025, speed: 0.025, color: 'rgba(189, 0, 255, 0.15)', phase: 0 }
+        ];
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw grid lines (oscilloscope grid)
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
+            ctx.lineWidth = 1;
+            for(let i = 0; i < canvas.width; i += 40) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvas.height);
+                ctx.stroke();
+            }
+            for(let i = 0; i < canvas.height; i += 40) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(canvas.width, i);
+                ctx.stroke();
+            }
+
+            // Draw center axis
+            ctx.strokeStyle = 'rgba(0, 242, 254, 0.08)';
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
+            ctx.lineTo(canvas.width, canvas.height / 2);
+            ctx.stroke();
+
+            // Draw and update waves
+            waves.forEach(wave => {
+                ctx.strokeStyle = wave.color;
+                ctx.lineWidth = wave.amplitude === 45 ? 2.5 : 1.5;
+                ctx.beginPath();
+                
+                for (let x = 0; x < canvas.width; x++) {
+                    const y = canvas.height / 2 + Math.sin(x * wave.frequency + wave.phase) * wave.amplitude;
+                    if (x === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                
+                ctx.stroke();
+                wave.phase += wave.speed;
+            });
+            
+            animationFrameId = requestAnimationFrame(animate);
+        }
+        animate();
+
+        // ----------------- Spectrum Explorer Logic -----------------
+        const spectrumData = {
+            vlf: {
+                name: "Tần số rất thấp (VLF)",
+                range: "3 kHz - 30 kHz",
+                wavelength: "10 km - 100 km",
+                usage: "Liên lạc ngầm dưới nước (tàu ngầm), nghiên cứu điện khí quyển, thông báo thời gian chuẩn quân sự.",
+                license: "Kiểm soát đặc biệt bởi Bộ Quốc Phòng và Cục Tần số. Không cấp phép thương mại phổ thông.",
+                icon: "🌊"
+            },
+            lf: {
+                name: "Tần số thấp (LF)",
+                range: "30 kHz - 300 kHz",
+                wavelength: "1 km - 10 km",
+                usage: "Hệ thống định vị hàng hải đường dài (LORAN), truyền tin thời tiết sóng dài, đồng hồ vô tuyến đồng bộ.",
+                license: "Yêu cầu cấp phép sử dụng thiết bị chuyên dụng hàng hải / công nghiệp.",
+                icon: "📡"
+            },
+            mf: {
+                name: "Tần số trung bình (MF)",
+                range: "300 kHz - 3 MHz",
+                wavelength: "100 m - 1 km",
+                usage: "Hệ thống phát thanh sóng trung AM hàng ngày (530 - 1600 kHz), liên lạc cứu nạn hàng hải ven biển.",
+                license: "Cần giấy phép sử dụng tần số đài truyền thanh phát sóng thương mại hoặc đài chuyên dụng.",
+                icon: "📻"
+            },
+            hf: {
+                name: "Tần số cao (HF / Sóng ngắn)",
+                range: "3 MHz - 30 MHz",
+                wavelength: "10 m - 100 m",
+                usage: "Đài phát thanh sóng ngắn quốc tế, vô tuyến nghiệp dư (Ham radio), hàng không dân dụng đường dài vượt biển.",
+                license: "Cần chứng chỉ vô tuyến điện nghiệp dư và giấy phép sử dụng tần số nghiệp dư / chuyên dụng.",
+                icon: "🌍"
+            },
+            vhf: {
+                name: "Tần số rất cao (VHF)",
+                range: "30 MHz - 300 MHz",
+                wavelength: "1 m - 10 m",
+                usage: "Phát thanh FM thương mại (87-108 MHz), Truyền hình analog mặt đất, liên lạc vô tuyến đàm đàm thoại tầm ngắn hàng hải, hàng không dân dụng, cơ quan an ninh.",
+                license: "Kiểm soát chặt chẽ. Đàm thoại bộ đàm nội bộ cần phải đăng ký tần số sử dụng cố định.",
+                icon: "🚒"
+            },
+            uhf: {
+                name: "Tần số cực cao (UHF)",
+                range: "300 MHz - 3 GHz",
+                wavelength: "10 cm - 1 m",
+                usage: "Truyền dẫn mạng di động (2G/3G/4G/5G LTE), thiết bị Wi-Fi gia đình (2.4 GHz), định vị vệ tinh toàn cầu GPS, hệ thống đàm thoại nội bộ xây dựng/nhà hàng.",
+                license: "Các thiết bị Wi-Fi dân dụng công suất quy chuẩn được miễn phí giấy phép. Bộ đàm UHF cần làm hồ sơ xin tần số riêng biệt.",
+                icon: "📱"
+            },
+            shf: {
+                name: "Tần số siêu cao (SHF)",
+                range: "3 GHz - 30 GHz",
+                wavelength: "1 cm - 10 cm",
+                usage: "Mạng Wi-Fi tốc độ cao (5 GHz & 6 GHz), hệ thống Radar hàng không, viễn thông vệ tinh mặt đất, truyền dẫn sóng vi ba liên trạm.",
+                license: "Mạng Wi-Fi nội bộ băng tần 5/6GHz công suất thấp được miễn phí. Truyền dẫn vi ba vệ tinh yêu cầu đăng ký kinh doanh & cấp phép.",
+                icon: "🛰️"
+            },
+            ehf: {
+                name: "Tần số cực kỳ cao (EHF / Sóng milimét)",
+                range: "30 GHz - 300 GHz",
+                wavelength: "1 mm - 10 mm",
+                usage: "Mạng 5G mmWave siêu tốc, kính viễn vọng vô tuyến vũ trụ, radar quét chủ động an ninh sân bay, kết nối điểm - điểm cự ly cực ngắn tốc độ cao.",
+                license: "Cần giấy phép quy hoạch băng tần công nghiệp cao quốc gia hoặc giấy phép mạng di động viễn thông.",
+                icon: "⚡"
+            }
+        };
+
+        // Spectrum wave simulator canvas
+        const specCanvas = document.getElementById('specWaveCanvas');
+        const specCtx = specCanvas.getContext('2d');
+        
+        let specWaveFreq = 0.007;
+        let specWaveAmp = 22;
+        let specWaveSpeed = 0.02;
+        let specWavePhase = 0;
+
+        function resizeSpecCanvas() {
+            specCanvas.width = specCanvas.parentElement.clientWidth;
+            specCanvas.height = specCanvas.parentElement.clientHeight || 70;
+        }
+        window.addEventListener('resize', resizeSpecCanvas);
+        resizeSpecCanvas();
+
+        function drawSpecWave() {
+            if (!specCanvas) return;
+            specCtx.clearRect(0, 0, specCanvas.width, specCanvas.height);
+            
+            // Draw mini grid
+            specCtx.strokeStyle = 'rgba(255, 255, 255, 0.015)';
+            specCtx.lineWidth = 1;
+            for(let i = 0; i < specCanvas.width; i += 20) {
+                specCtx.beginPath();
+                specCtx.moveTo(i, 0);
+                specCtx.lineTo(i, specCanvas.height);
+                specCtx.stroke();
+            }
+
+            specCtx.strokeStyle = 'rgba(0, 242, 254, 0.65)';
+            specCtx.shadowColor = 'rgba(0, 242, 254, 0.3)';
+            specCtx.shadowBlur = 4;
+            specCtx.lineWidth = 1.8;
+            specCtx.beginPath();
+            
+            for (let x = 0; x < specCanvas.width; x++) {
+                const y = specCanvas.height / 2 + Math.sin(x * specWaveFreq + specWavePhase) * specWaveAmp;
+                if (x === 0) {
+                    specCtx.moveTo(x, y);
+                } else {
+                    specCtx.lineTo(x, y);
+                }
+            }
+            specCtx.stroke();
+            specCtx.shadowBlur = 0; // reset
+            specWavePhase += specWaveSpeed;
+            
+            requestAnimationFrame(drawSpecWave);
+        }
+        drawSpecWave();
+
+        function selectBand(bandId) {
+            const data = spectrumData[bandId];
+            if (!data) return;
+            
+            // Update active tab button style
+            document.querySelectorAll('.band-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(`tab-${bandId}`).classList.add('active');
+
+            // Animate transition
+            const detailsContainer = document.getElementById('detail-panel');
+            detailsContainer.style.opacity = '0.3';
+            detailsContainer.style.transform = 'translateY(8px)';
+
+            setTimeout(() => {
+                document.getElementById('band-title').innerText = data.name;
+                document.getElementById('band-range').innerText = data.range;
+                document.getElementById('band-wavelength').innerText = data.wavelength;
+                document.getElementById('band-usage').innerText = data.usage;
+                document.getElementById('band-license').innerText = data.license;
+                document.getElementById('band-icon').innerText = data.icon;
+
+                // Adjust simulated frequency/amplitude dynamically depending on RF band chosen
+                switch(bandId) {
+                    case 'vlf':
+                        specWaveFreq = 0.003; specWaveAmp = 25; specWaveSpeed = 0.005; break;
+                    case 'lf':
+                        specWaveFreq = 0.007; specWaveAmp = 22; specWaveSpeed = 0.01; break;
+                    case 'mf':
+                        specWaveFreq = 0.015; specWaveAmp = 20; specWaveSpeed = 0.02; break;
+                    case 'hf':
+                        specWaveFreq = 0.035; specWaveAmp = 18; specWaveSpeed = 0.035; break;
+                    case 'vhf':
+                        specWaveFreq = 0.075; specWaveAmp = 15; specWaveSpeed = 0.055; break;
+                    case 'uhf':
+                        specWaveFreq = 0.16; specWaveAmp = 12; specWaveSpeed = 0.085; break;
+                    case 'shf':
+                        specWaveFreq = 0.35; specWaveAmp = 8; specWaveSpeed = 0.13; break;
+                    case 'ehf':
+                        specWaveFreq = 0.7; specWaveAmp = 5; specWaveSpeed = 0.22; break;
+                }
+
+                detailsContainer.style.opacity = '1';
+                detailsContainer.style.transform = 'translateY(0)';
+            }, 180);
+        }
+
+        // Initialize wave frequency values
+        selectBand('vlf');
+
+        // ----------------- Licensing Fee Calculator Logic -----------------
+        function calculateFees() {
+            const deviceType = document.getElementById('deviceType').value;
+            const quantity = Math.max(1, parseInt(document.getElementById('quantity').value) || 1);
+            const duration = parseInt(document.getElementById('duration').value) || 1;
+            
+            // Adjust input value if negative/empty
+            document.getElementById('quantity').value = quantity;
+
+            let baseFee = 0; // Fee per device per year (VND)
+            let setupFee = 0; // Fixed administrative processing fee
+
+            switch(deviceType) {
+                case 'bodam':
+                    baseFee = 360000;
+                    setupFee = 100000;
+                    break;
+                case 'tramcodinh':
+                    baseFee = 2400000;
+                    setupFee = 400000;
+                    break;
+                case 'drone':
+                    baseFee = 200000;
+                    setupFee = 100000;
+                    break;
+                case 'wifipower':
+                    baseFee = 800000;
+                    setupFee = 200000;
+                    break;
+                case 'satellite':
+                    baseFee = 12000000;
+                    setupFee = 1500000;
+                    break;
+                default:
+                    baseFee = 0;
+                    setupFee = 0;
+            }
+
+            const subTotal = baseFee * quantity * duration;
+            const total = subTotal + setupFee;
+
+            const formatCurrency = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
+
+            document.getElementById('calcBaseFee').innerText = formatCurrency(baseFee);
+            document.getElementById('calcSetupFee').innerText = formatCurrency(setupFee);
+            document.getElementById('calcSubtotal').innerText = formatCurrency(subTotal);
+            document.getElementById('calcTotal').innerText = formatCurrency(total);
+        }
+
+        // Initialize calculator
+        calculateFees();
+
+        // ----------------- Interference Troubleshooter Wizard Logic -----------------
+        let currentStep = 1;
+        let selectedSymptom = "";
+        let selectedDevice = "";
+
+        function selectWizardOption(labelEl, step) {
+            // Uncheck other options in this step
+            const parent = labelEl.parentElement;
+            parent.querySelectorAll('.tr-option-label').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            labelEl.classList.add('selected');
+            const input = labelEl.querySelector('input');
+            input.checked = true;
+
+            if (step === 1) {
+                selectedSymptom = input.value;
+            } else if (step === 2) {
+                selectedDevice = input.value;
+            }
+
+            // Enable next button
+            document.getElementById('tr-next-btn').disabled = false;
+        }
+
+        function wizardNext() {
+            if (currentStep === 1) {
+                currentStep = 2;
+                updateWizardView();
+            } else if (currentStep === 2) {
+                currentStep = 3;
+                analyzeResults();
+                updateWizardView();
+            }
+        }
+
+        function wizardBack() {
+            if (currentStep === 2) {
+                currentStep = 1;
+                updateWizardView();
+            } else if (currentStep === 3) {
+                currentStep = 2;
+                updateWizardView();
+            }
+        }
+
+        function updateWizardView() {
+            // Hide all steps
+            document.querySelectorAll('.tr-step').forEach(step => {
+                step.classList.remove('active');
+            });
+
+            // Show active step
+            document.getElementById(`tr-step-${currentStep}`).classList.add('active');
+
+            // Progress bar and indicators
+            const progress = document.getElementById('wizard-progress');
+            const titleInd = document.getElementById('wizard-title-indicator');
+            const badgeInd = document.getElementById('wizard-step-badge');
+            const backBtn = document.getElementById('tr-back-btn');
+            const nextBtn = document.getElementById('tr-next-btn');
+
+            if (currentStep === 1) {
+                progress.style.width = '33.3%';
+                titleInd.innerText = "Chẩn đoán: Bước 1 trên 3";
+                badgeInd.innerText = "BƯỚC 1/3";
+                backBtn.style.visibility = 'hidden';
+                nextBtn.innerText = "Tiếp theo";
+                nextBtn.disabled = !selectedSymptom;
+            } else if (currentStep === 2) {
+                progress.style.width = '66.6%';
+                titleInd.innerText = "Chẩn đoán: Bước 2 trên 3";
+                badgeInd.innerText = "BƯỚC 2/3";
+                backBtn.style.visibility = 'visible';
+                nextBtn.innerText = "Chẩn đoán ngay";
+                nextBtn.style.display = 'block';
+                nextBtn.disabled = !selectedDevice;
+            } else if (currentStep === 3) {
+                progress.style.width = '100%';
+                titleInd.innerText = "Chẩn đoán: Kết quả phân tích";
+                badgeInd.innerText = "HOÀN THÀNH";
+                backBtn.style.visibility = 'visible';
+                nextBtn.style.display = 'none'; // Hide next button since it's the end
+            }
+        }
+
+        function analyzeResults() {
+            const resultBox = document.getElementById('tr-analysis-result');
+            let analysis = "";
+
+            if (selectedSymptom === 'noise') {
+                if (selectedDevice === 'walkie') {
+                    analysis = "Hiện tượng rè bộ đàm có thể do xung đột tần số phụ (CTCSS/DCS) hoặc nhiễu từ thiết bị điện từ cao tần gần đó. Khuyến nghị: Thay đổi mã code đàm thoại nhóm hoặc đo kiểm thiết bị.";
+                } else if (selectedDevice === 'wifi') {
+                    analysis = "Nhiễu tín hiệu mạng thường xảy ra do xung đột kênh phát (đặc biệt dải 2.4GHz). Khuyến nghị: Chuyển kênh Wi-Fi sang các kênh không giao thoa (1, 6, 11) hoặc đổi lên băng tần 5GHz.";
+                } else if (selectedDevice === 'mic') {
+                    analysis = "Micro không dây bị rè thường do cự ly phát quá xa hoặc bị chồng lấn bởi sóng truyền hình UHF địa phương. Khuyến nghị: Điều chỉnh lại tần số của mic sang dải phụ rảnh hoặc tăng độ cao ăng-ten thu.";
+                } else {
+                    analysis = "Tín hiệu bị nhiễu do ảnh hưởng từ các bức xạ điện từ công nghiệp. Khuyến nghị sử dụng thêm thiết bị lọc nhiễu ăng-ten.";
+                }
+            } else if (selectedSymptom === 'drop') {
+                analysis = "Mất tín hiệu ngắt quãng báo hiệu có hiện tượng vật cản địa hình hoặc nhiễu ngắt quãng từ trạm phát công suất lớn gần đó. Bạn nên kiểm tra công suất phát và đo lường khoảng cách trực xạ.";
+            } else if (selectedSymptom === 'interact') {
+                analysis = "Bị chồng lấn, nghe thấy tiếng đàm thoại khác chứng tỏ tần số bạn dùng trùng khớp hoàn toàn với một đơn vị khác gần khu vực. Bạn cần kiểm tra lại Giấy phép được cấp tần số để cấu hình đúng kênh hoặc đăng ký kênh độc quyền.";
+            } else if (selectedSymptom === 'total') {
+                analysis = "Mất hoàn toàn kết nối vô tuyến có thể do phần cứng thiết bị bị hỏng hóc hoặc bị chế áp/phát sóng phá hoại công suất lớn. Cần kiểm tra nguồn điện thiết bị trước khi làm báo cáo kỹ thuật.";
+            }
+
+            resultBox.innerText = analysis;
+        }
+
+        function submitTroubleReport() {
+            let symptomText = "";
+            let deviceText = "";
+
+            switch(selectedSymptom) {
+                case 'noise': symptomText = "bị rè, nhiễu âm thanh"; break;
+                case 'drop': symptomText = "mất tín hiệu ngắt quãng, sóng yếu"; break;
+                case 'interact': symptomText = "bị chồng lấn sóng, nghe tiếng nhóm khác"; break;
+                case 'total': symptomText = "mất hoàn toàn kết nối vô tuyến"; break;
+            }
+
+            switch(selectedDevice) {
+                case 'walkie': deviceText = "bộ đàm cầm tay"; break;
+                case 'wifi': deviceText = "thiết bị thu phát Wi-Fi"; break;
+                case 'mic': deviceText = "micro không dây chuyên nghiệp"; break;
+                case 'special': deviceText = "thiết bị vô tuyến chuyên dụng"; break;
+            }
+
+            const promptMessage = `Tôi muốn báo cáo sự cố can nhiễu vô tuyến. Thiết bị của tôi là ${deviceText} đang có hiện tượng ${symptomText}. Nhờ kỹ thuật viên hỗ trợ kiểm tra phổ tần.`;
+            triggerChatWidget(promptMessage);
+        }
+
+        // ----------------- FAQ Accordion Logic -----------------
+        function toggleFaq(btn) {
+            const item = btn.parentElement;
+            const isActive = item.classList.contains('active');
+            
+            // Close all items
+            document.querySelectorAll('.faq-item').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        }
+
+        // Helper scroll function
+        function scrollToId(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                const headerHeight = 70;
+                const offsetPosition = element.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+            }
+        }
+
+        // Active navbar link on scroll
+        window.addEventListener('scroll', () => {
+            let currentSectionId = '';
+            const sections = document.querySelectorAll('section');
+            const scrollPosition = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const top = section.offsetTop;
+                const height = section.offsetHeight;
+                if (scrollPosition >= top && scrollPosition < top + height) {
+                    currentSectionId = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('nav a').forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href') === `#${currentSectionId}` || 
+                    (currentSectionId === '' && a.getAttribute('href') === '#')) {
+                    a.classList.add('active');
+                }
+            });
+        });
+
+        // ----------------- Chat Widget Integration Control -----------------
+        // Triggers the n8n-chat widget to open, highlights the launcher button and sends initial message if specified.
+        function triggerChatWidget(initialUserMessage = "") {
+            const n8nContainer = document.getElementById('n8n-chat');
+            if (!n8nContainer) return;
+
+            // Find the launcher button inside n8n shadow DOM or regular DOM
+            // Search inside n8n-chat element for button / div representing the launcher
+            const chatBtn = n8nContainer.querySelector('button') || 
+                            n8nContainer.querySelector('[class*="button"]') || 
+                            n8nContainer.querySelector('[class*="chat-button"]');
+
+            if (chatBtn) {
+                // Pulse highlight the button for UX feedback
+                chatBtn.classList.add('pulse-guidance');
+                
+                // Trigger click to open the chat window
+                chatBtn.click();
+                
+                // Remove animation after window opens
+                setTimeout(() => {
+                    chatBtn.classList.remove('pulse-guidance');
+                }, 3000);
+
+                // If user selected a template path (like calculations or troubleshooter), we can copy it to clipboard or instruct them
+                if (initialUserMessage) {
+                    // Modern chat widgets might support input insertion, but since it's a closed script,
+                    // we write the text to clipboard and notify the user to paste it.
+                    navigator.clipboard.writeText(initialUserMessage)
+                        .then(() => {
+                            console.log("Copied report query to clipboard");
+                            // We can alert or toast, or let the user paste it. Since the chat opens,
+                            // having the message in clipboard makes it easy to right click -> paste.
+                            setTimeout(() => {
+                                alert("Đã chuẩn bị thông tin báo cáo trong bộ nhớ tạm (Clipboard).\nBạn chỉ cần Nhấn Ctrl + V (Dán) vào ô nhập chat và gửi đi!");
+                            }, 500);
+                        })
+                        .catch(err => {
+                            console.error("Failed to copy", err);
+                        });
+                }
+            } else {
+                // Fallback message
+                alert("Vui lòng nhấn vào biểu tượng Chat màu xanh ở góc phải màn hình để gửi báo cáo!");
+            }
+        }
+    </script>
+
+    <!-- n8n Chat Widget Initialization (PRESERVED EXACT CONFIGURATION) -->
     <script type="module">
         import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
 
