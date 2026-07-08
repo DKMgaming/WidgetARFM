@@ -43,8 +43,15 @@
             
             /* n8n-chat styling customization */
             --chat--color-primary: #00f2fe;
+            --chat--color--primary: #00f2fe;
             --chat--color-primary-shade-50: #00c6d1;
+            --chat--color--primary-shade-50: #00c6d1;
+            --chat--color--primary--shade-100: #00b6c1;
+            
             --chat--color-secondary: #4facfe;
+            --chat--color--secondary: #4facfe;
+            --chat--color-secondary-shade-50: #3a9ce8;
+            
             --chat--color-light: #0d1426;
             --chat--color-dark: #f3f4f6;
             --chat--border-radius: 1.5rem;
@@ -52,6 +59,12 @@
             --chat--window--width: 380px;
             --chat--window--height: 580px;
             --chat--button--border-radius: 50%;
+            
+            /* Toggle Launcher Button styling overrides */
+            --chat--toggle--background: #00f2fe;
+            --chat--toggle--hover--background: #00c6d1;
+            --chat--toggle--active--background: #00b6c1;
+            --chat--toggle--color: #070a13; /* Dark blue icon to contrast with neon cyan background */
             
             --chat--header--background: linear-gradient(135deg, #0d1426 0%, #070a13 100%);
             --chat--header--color: #ffffff;
@@ -62,8 +75,8 @@
             --chat--message--padding: 0.8rem 1.1rem;
             --chat--message--bot--background: #182440;
             --chat--message--bot--color: #f3f4f6;
-            --chat--message--user--background: #00f2fe;
-            --chat--message--user--color: #070a13;
+            --chat--message--user--background: #4facfe; /* Blue user bubble */
+            --chat--message--user--color: #ffffff;
             --chat--message-user-border-radius: 1.5rem 1.5rem 0.3rem 1.5rem;
             --chat--message-bot-border-radius: 1.5rem 1.5rem 1.5rem 0.3rem;
             --chat--message--box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
@@ -1846,22 +1859,42 @@
         });
 
         // ----------------- Chat Widget Integration Control -----------------
+        // Helper function to find the chat toggle button even inside Shadow DOM
+        function getChatButton() {
+            const container = document.getElementById('n8n-chat');
+            if (!container) return null;
+            
+            // 1. Check light DOM
+            let button = container.querySelector('.chat-button') || container.querySelector('button');
+            if (button) return button;
+            
+            // 2. Check Shadow DOM
+            const shadowHosts = container.querySelectorAll('*');
+            for (const host of shadowHosts) {
+                if (host.shadowRoot) {
+                    const btn = host.shadowRoot.querySelector('.chat-button') || host.shadowRoot.querySelector('button');
+                    if (btn) return btn;
+                }
+            }
+            
+            // 3. Fallback: check shadow root of n8n-chat container if it gets turned into one
+            if (container.shadowRoot) {
+                const btn = container.shadowRoot.querySelector('.chat-button') || container.shadowRoot.querySelector('button');
+                if (btn) return btn;
+            }
+
+            return null;
+        }
+
         // Triggers the n8n-chat widget to open, highlights the launcher button and sends initial message if specified.
         function triggerChatWidget(initialUserMessage = "") {
-            const n8nContainer = document.getElementById('n8n-chat');
-            if (!n8nContainer) return;
-
-            // Find the launcher button inside n8n shadow DOM or regular DOM
-            // Search inside n8n-chat element for button / div representing the launcher
-            const chatBtn = n8nContainer.querySelector('button') || 
-                            n8nContainer.querySelector('[class*="button"]') || 
-                            n8nContainer.querySelector('[class*="chat-button"]');
+            const chatBtn = getChatButton();
 
             if (chatBtn) {
                 // Pulse highlight the button for UX feedback
                 chatBtn.classList.add('pulse-guidance');
                 
-                // Trigger click to open the chat window
+                // Trigger click to toggle the chat window
                 chatBtn.click();
                 
                 // Remove animation after window opens
@@ -1888,7 +1921,7 @@
                 }
             } else {
                 // Fallback message
-                alert("Vui lòng nhấn vào biểu tượng Chat màu xanh ở góc phải màn hình để gửi báo cáo!");
+                alert("Vui lòng nhấn vào biểu tượng Chat ở góc phải màn hình để gửi báo cáo!");
             }
         }
     </script>
